@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clymait – Nigeria crop climate check</title>
+  <meta name="description" content="Compare rice, cassava and yam for any area of Nigeria, see measured climate risk, and test a drier or wetter year.">
+  <meta name="theme-color" content="#0e2a1b">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-plate"><img src="assets/clymait.svg" alt="Clymait" width="138" height="34"></span>
+      </div>
+      <nav class="tabs" aria-label="Sections">
+        <button type="button" data-view="home" aria-current="page"><svg class="ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg><span>Dashboard</span></button>
+        <button type="button" data-view="explore"><svg class="ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4Z"/><path d="M9 4v13M15 7v13"/></svg><span>Explore the map</span></button>
+        <button type="button" data-view="fields"><svg class="ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21c0-9 5-14 14-16 0 9-5 14-14 16Z"/><path d="M5 21c3-5 6-8 10-10"/></svg><span>My fields <span class="count" id="field-count"></span></span></button>
+        <button type="button" data-view="planner"><svg class="ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h12l-3-3M20 16H8l3 3"/><path d="M16 8a4 4 0 0 1 4 4M8 16a4 4 0 0 1-4-4"/></svg><span>Rotation planner</span></button>
+        <button type="button" data-view="about"><svg class="ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg><span>About and method</span></button>
+      </nav>
+      <p class="side-note">Prototype · Nigeria<br>Veritas AI · Climate track</p>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <div class="brand mobile-brand"><img src="assets/clymait.svg" alt="Clymait" width="122" height="30"></div>
+        <p class="header-note">Prototype · Nigeria · rice, cassava, yam</p>
+      </header>
+
+  <main class="wrap" id="main">
+   <div id="view-home">
+     <div id="home-root"></div>
+   </div>
+
+   <div id="view-explore" hidden>
+    <div id="pick-bar" class="pick-bar" hidden role="region" aria-label="Choosing a field location">
+      <p id="pick-text"></p>
+      <div class="pick-actions">
+        <button type="button" class="btn primary" id="pick-use">Use this square</button>
+        <button type="button" class="btn" id="pick-cancel">Cancel</button>
+      </div>
+    </div>
+    <div id="field-banner" class="banner" hidden>
+      <p id="field-banner-text"></p>
+      <div class="pick-actions">
+        <button type="button" class="btn" id="field-banner-back">Back to my field</button>
+        <button type="button" class="btn" id="field-banner-close">Close</button>
+      </div>
+    </div>
+
+    <section class="intro">
+      <h1>Which crop does your area's climate favour?</h1>
+      <p>Pick a place in Nigeria to compare rice, cassava and yam, see how risky the climate is there, and test what a drier or wetter year could do. Works offline once it has loaded.</p>
+    </section>
+
+    <noscript><p class="notice">This tool needs JavaScript to draw the map and calculate results.</p></noscript>
+
+    <div class="layout">
+      <!-- MAP -->
+      <section class="panel map-panel" aria-labelledby="map-title">
+        <h2 id="map-title" class="panel-title">1. Choose a place</h2>
+
+        <div class="picker">
+          <label for="state-select">Pick a state</label>
+          <div class="picker-row">
+            <select id="state-select"></select>
+            <button type="button" id="locate" class="btn">Use my location</button>
+          </div>
+          <p id="locate-msg" class="hint" role="status"></p>
+        </div>
+
+        <p class="label">Colour the map by</p>
+        <div class="seg" id="layer-seg" role="group" aria-label="Map colour"></div>
+
+        <svg id="map" role="group" tabindex="0"
+             aria-label="Map of Nigeria made of 288 squares. Tap a square to choose it, or use the arrow keys to move between squares."></svg>
+
+        <div class="legend">
+          <p class="legend-title" id="legend-title"></p>
+          <div class="legend-bar" id="legend-bar"></div>
+          <div class="legend-scale"><span id="legend-min"></span><span id="legend-mid"></span><span id="legend-max"></span></div>
+        </div>
+        <p class="hint">Each square is about 55 km wide. Borders between states are not drawn, so state names near borders are approximate.</p>
+        <p class="jump"><a href="#results" id="jump-link">See details for the chosen place ↓</a></p>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="panel result-panel" id="results" aria-labelledby="place-name" tabindex="-1">
+        <header class="place-head">
+          <p class="eyebrow">2. Your results · nearest state</p>
+          <h2 id="place-name" aria-live="polite"></h2>
+          <p class="muted" id="place-sub"></p>
+          <p class="place-action"><button type="button" class="btn small" id="use-square">Use this square for a field</button></p>
+        </header>
+
+        <div class="tiles" id="tiles"></div>
+
+        <article class="card" id="crop-card" aria-labelledby="crop-h">
+          <h3 id="crop-h">Which crop does the climate favour here?</h3>
+
+          <div class="slider-block">
+            <label for="rain">What if the rainfall changes?</label>
+            <p class="slider-readout" id="rain-readout" aria-live="polite"></p>
+            <input type="range" id="rain" min="0" max="4" step="1" value="2">
+            <div class="ticks" id="rain-ticks" aria-hidden="true"></div>
+            <p class="hint">Only rainfall changes. Temperature stays the same.</p>
+          </div>
+
+          <ol class="crop-list" id="crop-list"></ol>
+          <p class="verdict" id="verdict"></p>
+          <p class="hint key">Dark bar = estimate (0–100 points). Striped band = usual error range. These are estimates of the FAO GAEZ suitability rating from climate alone, not harvest forecasts.</p>
+        </article>
+
+        <article class="card" id="risk-card" aria-labelledby="risk-h"></article>
+        <article class="card" id="explain-card" aria-labelledby="explain-h"></article>
+      </section>
+    </div>
+
+    <section class="panel limits" aria-labelledby="limits-h">
+      <h2 id="limits-h" class="panel-title">Read this before using the numbers</h2>
+      <ul class="limit-list" id="limit-list"></ul>
+
+      <details>
+        <summary>How the numbers were made</summary>
+        <div class="details-body">
+          <h3>Data</h3>
+          <ul>
+            <li><strong>CHIRPS v3.0</strong> – monthly rainfall, used for yearly rainfall, dry months and rainfall variability.</li>
+            <li><strong>NASA POWER</strong> – temperature and heat days.</li>
+            <li><strong>SPEIbase 2.11</strong> – drought history (October 6-month index, drought = −1 or lower).</li>
+            <li><strong>FAO GAEZ v5</strong> – crop suitability ratings (rainfed, low input, 2001–2020), used as the reference the models learn from.</li>
+            <li>FAOSTAT national yields were examined but not used: they did not track climate closely enough.</li>
+          </ul>
+          <h3>Models (tested on squares the model had not seen)</h3>
+          <div class="table-wrap"><table id="model-table"></table></div>
+          <p class="hint">R² is the share of variation explained (1.0 would be perfect). Average error is in suitability points.</p>
+          <h3>Technical notes</h3>
+          <ul id="tech-notes"></ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>What could come next</summary>
+        <div class="details-body">
+          <ul>
+            <li>Soil and terrain data (SoilGrids, elevation) – the biggest gap today.</li>
+            <li>Real state boundaries instead of nearest-capital labels.</li>
+            <li>Future climate scenarios (NEX-GDDP) instead of a simple rainfall slider.</li>
+            <li>Comparing whole rotation strategies side by side, with vulnerable seasons (next-crop options for a field already exist in My fields, as draft guidance).</li>
+            <li>More crops (maize, cowpea) and local-language versions.</li>
+            <li>Farmers sharing solutions with other farmers in their region.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+   </div>
+
+   <div id="view-fields" hidden>
+     <div id="fields-root" aria-live="polite"></div>
+   </div>
+
+   <div id="view-planner" hidden>
+     <div id="planner-root"></div>
+   </div>
+
+   <div id="view-about" hidden>
+     <section class="intro"><h1>About Clymait</h1>
+       <p>A climate and crop-rotation decision aid for Nigerian farmers, built for the Veritas AI hackathon (Climate track).</p></section>
+     <div class="about-grid">
+       <article class="panel"><h2 class="panel-title">The problem</h2>
+         <p>Rainfall in Nigeria is shifting and uneven, and a wrong crop choice costs a whole season. Farmers know their land, but they rarely see climate risk, crop fit and rotation effects side by side, and many have slow or no internet.</p></article>
+       <article class="panel"><h2 class="panel-title">What Clymait does</h2>
+         <ul class="how-list">
+           <li><strong>Explore:</strong> climate suitability for rice, cassava and yam across <span data-metric="cells"></span> map squares, with a rainfall what-if slider.</li>
+           <li><strong>Measure risk:</strong> drought history, dry spells and heat for <span data-metric="states"></span> states, from observed data.</li>
+           <li><strong>Plan rotations:</strong> compare the current rotation with at least three alternatives on ten criteria, with a plain-language explanation.</li>
+           <li><strong>Learn from farmers:</strong> save plans, give feedback and record what actually happened.</li>
+         </ul></article>
+       <article class="panel"><h2 class="panel-title">Data</h2>
+         <ul class="how-list">
+           <li><strong>CHIRPS v3.0:</strong> monthly rainfall.</li>
+           <li><strong>NASA POWER:</strong> temperature and heat days.</li>
+           <li><strong>SPEIbase 2.11:</strong> drought history.</li>
+           <li><strong>FAO GAEZ v5:</strong> crop suitability ratings the models learn from (rainfed, low input, 2001–2020).</li>
+           <li><strong>Rotation rules:</strong> draft guidance from FAO, IITA, ICRISAT and Nigerian trials, each with its source and how much of it was read.</li>
+         </ul></article>
+       <article class="panel"><h2 class="panel-title">Tested, and what failed</h2>
+         <ul class="how-list">
+           <li>Suitability models were tested on map squares they had not seen (R² <span data-metric="r2"></span>). A simple rainfall curve did as well as complex models, so the simple one ships.</li>
+           <li>A drought-year predictor was built and <strong>not shipped</strong>: on future years it was no better than chance. The risk shown is what was measured in the past.</li>
+           <li>National FAOSTAT yields were dropped as a training signal: they did not track climate.</li>
+           <li>One unexplained result is flagged, not hidden: recent drought in a few states looks unusually high.</li>
+         </ul></article>
+       <article class="panel wide"><h2 class="panel-title">Honest limits</h2>
+         <ul class="how-list" id="about-limits"></ul></article>
+       <article class="panel wide"><h2 class="panel-title">Built for low connectivity and privacy</h2>
+         <p>Everything runs in the browser from files saved on the device. It works offline after the first visit and can be installed on a phone. Field profiles, plans and feedback stay on the device; nothing is sent to a server. Use the download buttons to keep a backup.</p></article>
+       <article class="panel wide"><h2 class="panel-title">Next</h2>
+         <ul class="how-list">
+           <li>Monthly rainfall, so planting windows can be checked.</li>
+           <li>Soil and terrain data (SoilGrids), the biggest gap today.</li>
+           <li>Agronomist review of the rotation rules, then yield and price data for real income estimates.</li>
+           <li>Future climate (NEX-GDDP) and farmers sharing solutions within a region.</li>
+         </ul></article>
+     </div>
+   </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p id="data-date"></p>
+      <p id="offline-status"></p>
+    </div>
+  </footer>
+    </div>
+  </div>
+
+  <script src="data/site_data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/rotation-engine.js"></script>
+  <script src="js/fields.js"></script>
+  <script src="js/planner-engine.js"></script>
+  <script src="js/planner.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

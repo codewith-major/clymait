@@ -1,0 +1,11 @@
+{
+  "name": "clymait",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Climate and crop-rotation decision aid for Nigerian farmers (static web app, no build step).",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "test": "node tests/rotation-engine.test.js && node tests/planner-engine.test.js"
+  },
+  "license": "UNLICENSED"
+}
