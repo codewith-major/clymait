@@ -2,7 +2,7 @@
 
 Nov 16, 2026 · @Blase
 
-**Track:** Climate · **Solo****:** Joshua Onosedeba Esezobor\] · **Demo: demo\_web(folder in Github)**
+**Track:** Climate · **Solo****:** Joshua Onosedeba Esezobor · **Demo: (https://github.com/codewith-major/clymait/blob/main/demo_web/index.html)**
 
 ## The problem
 
@@ -103,6 +103,6 @@ Other measured results:
 
 - Python with pandas, numpy, scikit-learn, xarray and matplotlib; Google Colab for the CHIRPS extraction; VS Code.
 - The web app is plain HTML, CSS and JavaScript, hosted on Vercel.
-- **AI tools:** Claude (Anthropic) was used to write and review code, draft the rotation-rules table from the sources, build the web app and draft this write-up. Perplexity was used for the research log. The team ran the data pipeline and checked the results.
+- **AI tools:** Claude (Anthropic) was used to write and review code, draft the rotation-rules table from the sources, build the web app and draft this write-up. Perplexity was used for the research log. I ran the data pipeline and checked the results.
 - No pretrained models were used.
 - Dashboard screenshots supplied by the team were used as visual inspiration only; all artwork in the app was drawn for this project.
